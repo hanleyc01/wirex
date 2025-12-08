@@ -1,1 +1,1 @@
-"""Test"""
+"""Hebbian associative memory models."""

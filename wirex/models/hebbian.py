@@ -3,6 +3,8 @@
 import equinox as eqx
 import jax
 
+from .coeffs import Coefficients
+
 __all__ = ["Hebbian"]
 
 
@@ -17,12 +19,12 @@ class Hebbian(eqx.Module):
     """
 
     weights: jax.Array
-    corr: jax.Array
+    coefficients: Coefficients
 
     @staticmethod
     def learning_rule(
         weights: jax.Array,
-        coefficients: jax.Array,
+        coefficients: Coefficients,
         pre_synaptic_layer: jax.Array,
         post_synaptic_layer: jax.Array,
     ) -> jax.Array:

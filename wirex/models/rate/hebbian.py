@@ -62,9 +62,9 @@ class Hebbian(eqx.Module):
 
         Using the indices of the weights of the matrix, a Hebbian learning rule is of
         the form:
-        $$
-        W_{ij} = c_0 + c_1^\text{pre} x_i + c_2^\text{post} y_j + c_2^\text{pre} x_i^2 + c_2^\text{post} y_j^2 + c_2^\text{corr} x_i y_j.
-        $$
+
+        .. math::
+            W_{ij} = c_0 + c_1^\text{pre} x_i + c_2^\text{post} y_j + c_2^\text{pre} x_i^2 + c_2^\text{post} y_j^2 + c_2^\text{corr} x_i y_j.
 
         Args:
             weights:
@@ -82,7 +82,7 @@ class Hebbian(eqx.Module):
         """
         ...
 
-    def recall(self, query: jax.Array) -> jax.Array:
+    def __call__(self, query: jax.Array) -> jax.Array:
         """Recall a stored pattern on the basis of a query.
 
         Args:

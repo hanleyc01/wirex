@@ -1,20 +1,22 @@
-"""[Covariance learning rule](https://neuronaldynamics.epfl.ch/online/Ch19.S2.html)."""
+"""Implementation of Oja's rule."""
 
 from typing import Self, override
 
+import jax
+import jax.lax as lax
+import jax.numpy as jnp
 from jaxtyping import Array, Float
 
 from .hebbian import Coefficients, Hebbian
 
+__all__ = ["Oja"]
 
-class Covariance(Hebbian):
+
+class Oja(Hebbian):
+    """Implementation of `Oja's Rule <https://en.wikipedia.org/wiki/Oja%27s_rule>`_ as an associative memory."""
+
     @classmethod
-    def init(
-        cls,
-        num_patterns: int,
-        expected_presynaptic_rate: float,
-        expected_postsynaptic_rate: float,
-    ) -> Self: ...
+    def init(cls, pattern_dim: int, gamma: float) -> Self: ...
 
     def fit(self, patterns: Float[Array, "N D"]) -> Self: ...
 

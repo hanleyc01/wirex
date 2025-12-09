@@ -1,15 +1,18 @@
-"""[Oja's rule](https://neuronaldynamics.epfl.ch/online/Ch19.S2.html)."""
+"""`Bienenstock-Cooper-Munro Rule <https://neuronaldynamics.epfl.ch/online/Ch19.S2.html>`_"""
 
 from typing import Self, override
 
+import jax
 from jaxtyping import Array, Float
 
 from .hebbian import Coefficients, Hebbian
 
 
-class Oja(Hebbian):
+class BCM(Hebbian):
     @classmethod
-    def init(cls, num_patterns: int, gamma: float) -> Self: ...
+    def init(
+        cls, num_patterns: int, learning_rate: float, activity_threshold: float
+    ) -> Self: ...
 
     def fit(self, patterns: Float[Array, "N D"]) -> Self: ...
 

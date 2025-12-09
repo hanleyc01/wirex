@@ -1,4 +1,4 @@
-"""Implementation of an [Activity Product Rule](https://neuronaldynamics.epfl.ch/online/Ch19.S2.html)."""
+"""Implementation of an `Activity Product Rule <https://neuronaldynamics.epfl.ch/online/Ch19.S2.html>`_."""
 
 from typing import Self, override
 
@@ -7,8 +7,7 @@ import jax.numpy as jnp
 import numpy as np
 from jaxtyping import Array, Float
 
-from .coeffs import Coefficients
-from .hebbian import Hebbian
+from .hebbian import Coefficients, Hebbian
 
 __all__ = ["ActivityProductRule"]
 
@@ -17,11 +16,12 @@ class ActivityProductRule(Hebbian):
     r"""Activity Product Rule Hebbian associative memory.
 
     The activity product learning rule is defined as:
-    $$
-    \Delta W = \eta x x^\top,
-    $$
-    where $W$ is the weights of the model, $x$ is the pattern that
-    you wish to memorize, and $\eta$ the learning rate.
+
+    .. math::
+        \Delta W = \eta x x^\top,
+
+    where :math:`W` is the weights of the model, :math:`x` is the pattern that
+    you wish to memorize, and :math:`\eta` the learning rate.
 
     Example:
         `ActivityProductRule` is initializes with a the class method `ActivityProductRule.init`,
@@ -86,9 +86,8 @@ class ActivityProductRule(Hebbian):
     ) -> Float[Array, "D D"]:
         r"""Activity Product Rule learning rule:
 
-        $$
-        \Delta W = \eta x x^\top,
-        $$
+        .. math::
+            \Delta W = \eta x x^\top,
         """
         return weights + coefficients.c_2_corr * jnp.outer(
             pre_synaptic_layer, post_synaptic_layer

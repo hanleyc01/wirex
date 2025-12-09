@@ -11,8 +11,8 @@ from numpy.typing import NDArray
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 
-from wirex.models.apr import ActivityProductRule
-from wirex.models.hopfield import Hopfield
+from wirex.models.rate.apr import ActivityProductRule
+from wirex.models.rate.hopfield import Hopfield
 
 matplotlib.use("Qt5Agg")
 
@@ -45,12 +45,12 @@ def main() -> None:
     Xi = jnp.array(mnist_data[:2], dtype=jnp.float32)
     hopfield = Hopfield(Xi.T @ Xi)
     query = Xi[1]
-    result = hopfield.recall(query)
+    result = hopfield(query)
     show_im(result, "Hopfield_result")
     plt.show()
 
     apr = ActivityProductRule.init(Xi.shape[-1], 1).fit(Xi)
-    result = apr.recall(query)
+    result = apr(query)
     show_im(result, "APR Result")
     plt.show()
 

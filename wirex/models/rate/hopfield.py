@@ -8,10 +8,10 @@ __all__ = ["Hopfield"]
 
 
 class Hopfield(eqx.Module):
-    """Implementation of the [Hopfield network](https://en.wikipedia.org/wiki/Hopfield_network) using energy-descent.
+    """Implementation of the `Hopfield network <https://en.wikipedia.org/wiki/Hopfield_network) using energy-descent>`_.
 
     For more information about the mechanisms behind Hopfield networks, see
-    this [tutorial on associative memories](https://tutorial.amemory.net/).
+    this `tutorial on associative memories <https://tutorial.amemory.net/>`_.
 
     Attributes:
         weights:
@@ -20,7 +20,7 @@ class Hopfield(eqx.Module):
 
     weights: Float[Array, "D D"]
 
-    def recall(self, query: Float[Array, "D"]) -> Float[Array, "D"]:
+    def __call__(self, query: Float[Array, "D"]) -> Float[Array, "D"]:
         """Perform energy-descent minimization recall over `initial_state`.
 
         Args:

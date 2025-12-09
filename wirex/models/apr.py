@@ -93,7 +93,3 @@ class ActivityProductRule(Hebbian):
         return weights + coefficients.c_2_corr * jnp.outer(
             pre_synaptic_layer, post_synaptic_layer
         )
-
-    @override
-    def recall(self, query: Float[Array, "D"]) -> Float[Array, "D"]:
-        return jnp.sign(self.weights.dot(query))

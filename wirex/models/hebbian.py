@@ -2,6 +2,7 @@
 
 import equinox as eqx
 import jax
+import jax.numpy as jnp
 
 from .coeffs import Coefficients
 
@@ -62,4 +63,4 @@ class Hebbian(eqx.Module):
         Returns:
             The stored pattern that the query excites.
         """
-        ...
+        return jnp.sign(self.weights.dot(query))

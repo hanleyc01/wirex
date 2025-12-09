@@ -11,8 +11,7 @@ from numpy.typing import NDArray
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 
-from wirex.models.apr import ActivityProductRule
-
+from .models.apr import ActivityProductRule
 from .models.hopfield import Hopfield
 
 matplotlib.use("Qt5Agg")

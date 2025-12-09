@@ -1,8 +1,14 @@
 # wirex 
 
-wirex is a library and experimental package
+`wirex` is a library and experimental package
 which provides experiments with potential Hebbian alternatives to Dense Associative
 Memories.
+
+## What's in a name?
+
+`wirex` is a portmanteau of *wire* with [`jax`](https://github.com/jax-ml/jax).
+The "wire" comes from the Hebbian adage:
+> Neurons that fire together, *wire* together.
 
 ## What is a "Hebbian" associative Memory?
 

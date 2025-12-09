@@ -1,7 +1,13 @@
+# 🚧 WARNING THIS PROJECT IS UNDER ACTIVE CONSTRUCTION 🏗️
+
+The project is half-implemented, and receiving active implementation.
+Large portions might be cut or change at random without notification.
+Please do not use.
+
 # wirex 
 
-`wirex` is a library and experimental package
-which provides experiments with potential Hebbian alternatives to Dense Associative
+`wirex` is a library and experimental package which is **UNDER DEVELOPMENT**
+which provides tools to experiment with potential Hebbian alternatives to Dense Associative
 Memories.
 
 ## What's in a name?

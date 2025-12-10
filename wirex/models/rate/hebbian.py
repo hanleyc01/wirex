@@ -1,31 +1,38 @@
 """A Hebbian model is any associative memory which implements a *Hebbian* learning rule."""
 
-from typing import Self
+from typing import Callable, Self
 
 import equinox as eqx
 import jax
 import jax.numpy as jnp
 
-__all__ = ["Hebbian", "Coefficients"]
+__all__ = ["Hebbian", "Coefficients", "CoefficientType"]
+
+type CoefficientType = float | Callable[[jax.Array], jax.Array]
+"""Type of coefficients: `float | Callable[[jax.Array], jax.Array]"""
 
 
 class Coefficients(eqx.Module):
-    c_0: float
-    c_1_pre: float
-    c_1_post: float
-    c_2_pre: float
-    c_2_post: float
-    c_2_corr: float
+    c_0: CoefficientType
+    c_1_pre: CoefficientType
+    c_1_post: CoefficientType
+    c_2_pre: CoefficientType
+    c_2_post: CoefficientType
+    c_2_corr: CoefficientType
+    c_3_pre: CoefficientType
+    c_3_post: CoefficientType
 
     @classmethod
     def init(
         cls,
-        c_0: float = 0.0,
-        c_1_pre: float = 0.0,
-        c_1_post: float = 0.0,
-        c_2_pre: float = 0.0,
-        c_2_post: float = 0.0,
-        c_2_corr: float = 0.0,
+        c_0: CoefficientType = 0.0,
+        c_1_pre: CoefficientType = 0.0,
+        c_1_post: CoefficientType = 0.0,
+        c_2_pre: CoefficientType = 0.0,
+        c_2_post: CoefficientType = 0.0,
+        c_2_corr: CoefficientType = 0.0,
+        c_3_pre: CoefficientType = 0.0,
+        c_3_post: CoefficientType = 0.0,
     ) -> Self:
         return cls(
             c_0=c_0,
@@ -34,6 +41,8 @@ class Coefficients(eqx.Module):
             c_2_pre=c_2_pre,
             c_2_post=c_2_post,
             c_2_corr=c_2_corr,
+            c_3_pre=c_3_pre,
+            c_3_post=c_3_post,
         )
 
 

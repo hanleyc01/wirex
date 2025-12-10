@@ -1,6 +1,6 @@
 """`Covariance learning rule <https://neuronaldynamics.epfl.ch/online/Ch19.S2.html>`_."""
 
-from typing import Self, override
+from typing import Self, cast, override
 
 import jax.numpy as jnp
 from jaxtyping import Array, Float
@@ -65,9 +65,11 @@ class Covariance(Hebbian):
     def fit(self, patterns: Float[Array, "N D"], num_iters: int) -> Self: ...
 
     def presynaptic(self, presynaptic_rate: Float[Array, "D"]) -> Float[Array, "D"]:
+        """The difference of the presynaptic rate with its expected value."""
         return presynaptic_rate - self.expected_presynaptic_rates
 
     def postsynaptic(self, postsynaptic_rate: Float[Array, "D"]) -> Float[Array, "D"]:
+        """The difference of the postsynaptic rate with its expected value."""
         return postsynaptic_rate - self.expected_postsynaptic_rates
 
     @override
@@ -84,6 +86,6 @@ class Covariance(Hebbian):
         .. math::
             \Delta W_{ij} = \gamma (x_i - \langle x_i \rangle) (y_j - \langle y_j \rangle).
         """
-        return weights + coefficients.c_2_corr * jnp.outer(
+        return weights + cast(float, coefficients.c_2_corr) * jnp.outer(
             pre_synaptic_layer, post_synaptic_layer
         )

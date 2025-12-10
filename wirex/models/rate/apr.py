@@ -1,6 +1,6 @@
 """Implementation of an `Activity Product Rule <https://neuronaldynamics.epfl.ch/online/Ch19.S2.html>`_."""
 
-from typing import Self, override
+from typing import Self, cast, override
 
 import jax.lax as lax
 import jax.numpy as jnp
@@ -89,6 +89,6 @@ class ActivityProductRule(Hebbian):
         .. math::
             \Delta W = \eta x x^\top,
         """
-        return weights + coefficients.c_2_corr * jnp.outer(
+        return weights + cast(float, coefficients.c_2_corr) * jnp.outer(
             pre_synaptic_layer, post_synaptic_layer
         )

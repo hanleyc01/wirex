@@ -3,6 +3,7 @@
 from typing import Self, override
 
 import jax
+import jax.numpy as jnp
 from jaxtyping import Array, Float
 
 from .hebbian import Coefficients, Hebbian
@@ -11,8 +12,13 @@ from .hebbian import Coefficients, Hebbian
 class BCM(Hebbian):
     @classmethod
     def init(
-        cls, num_patterns: int, learning_rate: float, activity_threshold: float
-    ) -> Self: ...
+        cls, pattern_dim: int, learning_rate: float, activity_threshold: float
+    ) -> Self:
+        weights = jnp.zeros((pattern_dim, pattern_dim), dtype=jnp.float32)
+        coefficients = Coefficients.init(
+            c_3_pre=learning_rate, c_2_corr=-learning_rate * activity_threshold
+        )
+        return cls(weights=weights, coefficients=coefficients)
 
     def fit(self, patterns: Float[Array, "N D"]) -> Self: ...
 

@@ -9,8 +9,17 @@ from jaxtyping import Array, Float
 def uniform(
     key: jax.Array, num_patterns: int, pattern_dim: int
 ) -> Float[Array, "num_patterns pattern_dim"]:
-    """Generate uniformly sampled random data."""
-    ...
+    """Generate uniformly sampled random data.
+
+    Args:
+        key jax.Array: Random key to be used by `jax.random`.
+        num_patterns int: The number of patterns to generate.
+        pattern_dim int: The dimension of the patterns to generate.
+
+    Returns:
+        The uniformly distributed random matrix.
+    """
+    return jr.uniform(key, (num_patterns, pattern_dim), dtype=jnp.float32)
 
 
 def correlated(
@@ -23,5 +32,5 @@ def correlated(
 def positive_skewed(
     key: jax.Array, skew: float, num_patterns: int, pattern_dim: int
 ) -> Float[Array, "num_patterns pattern_dim"]:
-    """Generate positively skewed data, see Johns and Jones (2010)."""
+    """Generate data with positive skew, see Johns and Jones (2010)."""
     ...

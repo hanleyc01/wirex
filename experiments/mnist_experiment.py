@@ -13,6 +13,8 @@ from numpy.typing import NDArray
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 
+from wirex.models.rate import Hopfield
+
 __all__ = ["MnistExperiment"]
 
 _DATA_CACHE = "./.cache/mnist/"
@@ -23,7 +25,7 @@ _PIXEL_HEIGHT = 28
 """Pixel height of the MNIST dataset."""
 
 
-def transform(data: torch.Tensor) -> NDArray[np.float32]:
+def _transform(data: torch.Tensor) -> NDArray[np.float32]:
     dataarr: NDArray[np.float32] = np.array(data, dtype=jnp.float32)
     dataarr = rearrange(dataarr, "w h -> (w h)")
     dataarr[dataarr > 0.0] = 1.0
@@ -42,10 +44,10 @@ class MnistExperiment:
     def run(self) -> None:
         dim = _PIXEL_HEIGHT * _PIXEL_WIDTH
         num_patterns = self.num_patterns
-
+        results = []
         for i in range(self.min, self.max):
             mnist_train = MNIST(
-                _DATA_CACHE, train=self.train, transform=transform, download=True
+                _DATA_CACHE, train=self.train, transform=_transform, download=True
             )
             mnist_data_loader = DataLoader(
                 mnist_train, batch_size=self.batch_size, shuffle=True
@@ -53,7 +55,9 @@ class MnistExperiment:
             mnist_it = iter(mnist_data_loader)
             mnist_data, _ = next(mnist_it)
 
-            Xi = jnp.array(mnist_data[:2], dtype=jnp.float32)
+            Xi = jnp.array(mnist_data[:i], dtype=jnp.float32)
             hopfield = Hopfield(Xi.T @ Xi)
             query = Xi[1]
             result = hopfield(query)
+            results.append(result)
+        print(results)

@@ -1,7 +1,7 @@
 """Client for running experiments."""
 
 import argparse as ap
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Literal, Never, assert_never, cast
 
 from .mnist_experiment import MnistExperiment
@@ -52,6 +52,12 @@ def ExperimentParser() -> ap.ArgumentParser:
         prog="experiments",
         description="Simple terminal client for running experiments",
         epilog="🐈",
+    )
+    _ = argparser.add_argument(
+        "-o",
+        "--output",
+        nargs=1,
+        help="Default: stdout. Path of file to output results",
     )
     subparsers = argparser.add_subparsers(help="Differing experimental conditions")
 
@@ -139,7 +145,7 @@ def ExperimentParser() -> ap.ArgumentParser:
 
 
 def mnist_experiment(args: MnistArgs) -> None:
-    MnistExperiment(*tuple(args)).run()
+    MnistExperiment(*tuple(asdict(args).values())).run()
 
 
 def random_experiment(args: RandomArgs) -> None:

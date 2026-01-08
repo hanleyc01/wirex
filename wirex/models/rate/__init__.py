@@ -7,3 +7,14 @@ from .generalhebbian import GeneralHebbian
 from .hebbian import Coefficients, Hebbian
 from .hopfield import Hopfield
 from .oja import Oja
+
+__all__ = [
+    "ActivityProductRule",
+    "BCM",
+    "Covariance",
+    "GeneralHebbian",
+    "Coefficients",
+    "Hebbian",
+    "Hopfield",
+    "Oja",
+]

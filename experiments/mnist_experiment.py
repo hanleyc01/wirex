@@ -1,27 +1,30 @@
 """Encapsulation of MNIST experimentation."""
 
+import json
+import sys
 from dataclasses import dataclass
+from typing import TextIO, cast
 
 import jax
-import jax.lax as lax
 import jax.numpy as jnp
-import jax.random as jr
 import numpy as np
 import torch
 from einops import rearrange
 from numpy.typing import NDArray
 from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
+from tqdm import tqdm
 
+from experiments.similarity import cosine_similarity
 from wirex.models.rate import Hopfield
 
-__all__ = ["MnistExperiment"]
+__all__ = ["MnistExperiment", "PIXEL_WIDTH", "PIXEL_HEIGHT"]
 
 _DATA_CACHE = "./.cache/mnist/"
 """Cache for serializing MNIST."""
-_PIXEL_WIDTH = 28
+PIXEL_WIDTH = 28
 """Pixel width of the MNIST dataset."""
-_PIXEL_HEIGHT = 28
+PIXEL_HEIGHT = 28
 """Pixel height of the MNIST dataset."""
 
 
@@ -35,17 +38,27 @@ def _transform(data: torch.Tensor) -> NDArray[np.float32]:
 
 @dataclass
 class MnistExperiment:
-    num_patterns: int
+    """Encapuslation of experimentation and results into a class.
+
+    Attributes:
+        num_patterns int: The number of patterns
+        train bool: Whether or not to sample from the train or test set.
+        min int: The lower bound of patterns to store in the network.
+        max int: The upper bound of patterns to store in the network.
+        batch_size int: Batch size to sample from the dataloader.
+        output (str | None): Defaults to `stdout`. Path to serialize output to.
+    """
+
     train: bool
     min: int
     max: int
     batch_size: int
+    output: str | None
 
     def run(self) -> None:
-        dim = _PIXEL_HEIGHT * _PIXEL_WIDTH
-        num_patterns = self.num_patterns
+        print("[MNIST EXPERIMENT] BEGINNING MNIST EXPERIMENT", file=sys.stderr)
         results = []
-        for i in range(self.min, self.max):
+        for i in tqdm(range(self.min, self.max)):
             mnist_train = MNIST(
                 _DATA_CACHE, train=self.train, transform=_transform, download=True
             )
@@ -59,5 +72,27 @@ class MnistExperiment:
             hopfield = Hopfield(Xi.T @ Xi)
             query = Xi[1]
             result = hopfield(query)
-            results.append(result)
-        print(results)
+            results.append((i, query, result, cosine_similarity(query, result)))
+        self.serialize_output(results)
+
+    def serialize_output(
+        self, results: list[tuple[int, jax.Array, jax.Array, jax.Array]]
+    ) -> None:
+        if not self.output:
+            output = cast(TextIO, sys.stderr)
+        else:
+            output = open(self.output, "w")
+        print(
+            f"[MNIST EXPERIMENT] EXPERIMENT FINISHED, SERIALIZING RESULT TO {output}",
+            file=sys.stderr,
+        )
+        result_dict = {}
+        for idx, query, result, similarity in tqdm(results):
+            result_dict["idx"] = idx
+            result_dict["query"] = str(np.asarray(query).tobytes())
+            result_dict["result"] = str(np.asarray(result).tobytes())
+            result_dict["similarity"] = float(similarity)
+
+        json.dump(result_dict, output)
+        if output != sys.stdout:
+            output.close()

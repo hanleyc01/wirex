@@ -21,6 +21,7 @@ dev = [
     "torchvision>=0.24.1",
     "matplotlib>=3.10.7",
     "sphinx>=9.0.4",
+    "tqdm>=4.67.1",
 ]
 
 [tool.pyright] 

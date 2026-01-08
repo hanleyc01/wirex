@@ -1,24 +1,25 @@
 """Client for running experiments."""
 
 import argparse as ap
-from dataclasses import asdict, dataclass
-from typing import Literal, Never, assert_never, cast
+from dataclasses import dataclass
+from typing import Literal, cast
 
 from .mnist_experiment import MnistExperiment
 
 
 @dataclass
 class MnistArgs:
-    num_patterns: int
     train: bool
     min: int
     max: int
     batch_size: int
+    output: str | None
 
 
 def mnist_subparser_defaults(args: ap.Namespace) -> MnistArgs:
     """Wrapped constructor to be used in the argument parser."""
-    return MnistArgs(args.num_patterns, args.train, args.min, args.max, args.batch_size)
+    output = args.output[0] if type(args.output) == list else None
+    return MnistArgs(args.train, args.min[0], args.max[0], args.batch_size[0], output)
 
 
 @dataclass
@@ -30,10 +31,12 @@ class RandomArgs:
     dtype: str
     min: int
     max: int
+    output: str | None
 
 
 def random_subparser_defaults(args: ap.Namespace) -> RandomArgs:
     """Wrapper constructor to be used in the argument parser."""
+    output = args.output[0] if type(args.output) == list else None
     return RandomArgs(
         args.distribution,
         args.value,
@@ -42,6 +45,7 @@ def random_subparser_defaults(args: ap.Namespace) -> RandomArgs:
         args.dtype,
         args.min,
         args.max,
+        output,
     )
 
 
@@ -59,6 +63,7 @@ def ExperimentParser() -> ap.ArgumentParser:
         nargs=1,
         help="Default: stdout. Path of file to output results",
     )
+    argparser.set_defaults(func=lambda _: None)
     subparsers = argparser.add_subparsers(help="Differing experimental conditions")
 
     random_subparser = subparsers.add_parser(
@@ -92,23 +97,20 @@ def ExperimentParser() -> ap.ArgumentParser:
         "--min",
         type=int,
         nargs=1,
-        default=2,
+        default=[2],
         help="Default: 2. Initial number of patterns to store.",
     )
     _ = random_subparser.add_argument(
         "--max",
         type=int,
         nargs=1,
-        default=100,
+        default=[100],
         help="Default: 100. Final number of patterns to store.",
     )
     random_subparser.set_defaults(func=random_subparser_defaults)
 
     mnist_subparser = subparsers.add_parser(
         "mnist", help="Run experiments on MNIST dataset. Mainly used for testing."
-    )
-    _ = mnist_subparser.add_argument(
-        "num_patterns", type=int, help="The number of patterns to memorize."
     )
     _ = mnist_subparser.add_argument(
         "-t",
@@ -121,14 +123,14 @@ def ExperimentParser() -> ap.ArgumentParser:
         "--min",
         type=int,
         nargs=1,
-        default=2,
+        default=[2],
         help="Default: 2. Initial number of patterns to store.",
     )
     _ = mnist_subparser.add_argument(
         "--max",
         type=int,
         nargs=1,
-        default=100,
+        default=[100],
         help="Default: 100. Final number of patterns to store.",
     )
     _ = mnist_subparser.add_argument(
@@ -136,7 +138,7 @@ def ExperimentParser() -> ap.ArgumentParser:
         "--batch-size",
         type=int,
         nargs=1,
-        default=123,
+        default=[123],
         help="Batch size to take from dataloader.",
     )
     mnist_subparser.set_defaults(func=mnist_subparser_defaults)
@@ -145,7 +147,14 @@ def ExperimentParser() -> ap.ArgumentParser:
 
 
 def mnist_experiment(args: MnistArgs) -> None:
-    MnistExperiment(*tuple(asdict(args).values())).run()
+    experiment = MnistExperiment(
+        train=args.train,
+        min=args.min,
+        max=args.max,
+        output=args.output,
+        batch_size=args.batch_size,
+    )
+    experiment.run()
 
 
 def random_experiment(args: RandomArgs) -> None:
@@ -153,15 +162,15 @@ def random_experiment(args: RandomArgs) -> None:
 
 
 def main() -> None:
-    client = ExperimentParser()
-    args = client.parse_args()
+    parser = ExperimentParser()
+    args = parser.parse_args()
     wrapped_args = cast(MnistArgs | RandomArgs, args.func(args))
     if type(wrapped_args) == MnistArgs:
         mnist_experiment(wrapped_args)
     elif type(wrapped_args) == RandomArgs:
         random_experiment(wrapped_args)
     else:
-        assert_never(cast(Never, wrapped_args))
+        parser.print_help()
 
 
 if __name__ == "__main__":

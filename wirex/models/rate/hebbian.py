@@ -45,6 +45,29 @@ class Coefficients(eqx.Module):
             c_3_post=c_3_post,
         )
 
+    def jax(self, dtype: jax.typing.DTypeLike = jnp.float32) -> jax.Array:
+        """Convert the `Coefficients` object into a `jax.Array`.
+
+        Returns:
+            Array with the format
+            ```
+            jax.array([self.c_0, self.c_1_pre, self.c_1_post, self.c_2_pre, self.c_2_post, self.c_2_corr, self.c_3_pre, self.c_3_post])
+            ```
+        """
+        return jnp.array(
+            [
+                self.c_0,
+                self.c_1_pre,
+                self.c_1_post,
+                self.c_2_pre,
+                self.c_2_post,
+                self.c_2_corr,
+                self.c_3_pre,
+                self.c_3_post,
+            ],
+            dtype=dtype,
+        )
+
 
 class Hebbian(eqx.Module):
     """`Hebbian` Associative Memory is any associative memory which implements `Hebbian.learning_rule`.
@@ -57,6 +80,9 @@ class Hebbian(eqx.Module):
     """
 
     weights: jax.Array
+    # TODO(hanleyc01): figure out a way to store the coefficients as an array rather
+    # than as a reference to a new object. the goal is to make these things' computation
+    # to be really fast.
     coefficients: Coefficients
 
     @staticmethod

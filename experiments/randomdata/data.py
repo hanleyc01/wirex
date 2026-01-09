@@ -5,6 +5,8 @@ import jax.numpy as jnp
 import jax.random as jr
 from jaxtyping import Array, Float
 
+__all__ = ["uniform", "correlated", "positive_skewed"]
+
 
 def uniform(
     key: jax.Array, num_patterns: int, pattern_dim: int

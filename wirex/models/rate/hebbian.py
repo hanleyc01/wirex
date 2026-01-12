@@ -8,7 +8,7 @@ import jax.numpy as jnp
 
 __all__ = ["Hebbian", "Coefficients", "CoefficientType"]
 
-type CoefficientType = float | Callable[[jax.Array], jax.Array]
+CoefficientType = float | Callable[[jax.Array], jax.Array]
 """Type of coefficients: `float | Callable[[jax.Array], jax.Array]"""
 
 

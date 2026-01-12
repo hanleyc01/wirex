@@ -53,7 +53,7 @@ class GeneralHebbian(Hebbian):
         the form:
 
         .. math::
-            W_{ij} = c_0 + c_1^\text{pre} x_i + c_2^\text{post} y_j + c_2^\text{pre} x_i^2 + c_2^\text{post} y_j^2 + c_2^\text{corr} x_i y_j.
+            \Delta W_{ij} = c_0 + c_1^\text{pre} x_i + c_1^\text{post} y_j + c_2^\text{pre} x_i^2 + c_2^\text{post} y_j^2 + c_2^\text{corr} x_i y_j + \ldots
 
         Args:
             weights:

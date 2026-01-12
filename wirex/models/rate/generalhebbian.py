@@ -69,7 +69,8 @@ class GeneralHebbian(Hebbian):
             The updated weights in terms of the models correlation coefficients
             and pre- and post-"synaptic" layers.
         """
-        # TODO(hanleyc01): optimize this loop to use `lax` builtins for speed-up
+        # TODO(hanleyc01): optimize this loop to use `lax` builtins for speed-up; see note in `Self.init`, but
+        # also note how we use convert to an array here: wouldn't it be easier to store an array *already*?
         coeffsarr = coefficients.jax()
         pattern_dim, _ = weights.shape
         new_weights = jnp.zeros_like(weights)

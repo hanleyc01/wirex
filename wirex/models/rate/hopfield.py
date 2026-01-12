@@ -13,6 +13,9 @@ class Hopfield(eqx.Module):
     For more information about the mechanisms behind Hopfield networks, see
     this `tutorial on associative memories <https://tutorial.amemory.net/>`_.
 
+    Note that this does not follow the general structure of the `Hebbian` class. Rather,
+    this is a direct implementation.
+
     Attributes:
         weights:
             `(D, D)`-dimensional matrix of full lateral connections between weights.

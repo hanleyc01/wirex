@@ -5,7 +5,9 @@ the Hebbian learning function.
 from typing import Self, override
 
 import jax
+import jax.lax as lax
 import jax.numpy as jnp
+import numpy as np
 from jaxtyping import Array, Float
 
 from .hebbian import Coefficients, Hebbian
@@ -36,7 +38,32 @@ class GeneralHebbian(Hebbian):
             coefficients=coefficients,
         )
 
-    def fit(self, patterns: Float[Array, "N D"]) -> Self: ...
+    def fit(self, patterns: Float[Array, "N D"]) -> Self:
+        """Fit an initialized `GeneralHebbian` model to a pattern set.
+
+        Args:
+            patterns:
+                `(N, D)`-dimensional matrix of `N` patterns, where `D` is `pattern_dim` used in initialization.
+
+        Returns:
+            A new reference to an `GeneralHebbian` model with the weights updated
+            according to `GeneralHebbian.learning_rule`.
+        """
+
+        # lax.scan takes function f : (c -> a -> (c, b))
+        def update_step(
+            weights: Float[Array, "D D"], i: np.ndarray
+        ) -> tuple[Float[Array, "D D"], None]:
+            """Iterate through the pattern set provided."""
+            pattern = patterns[i]
+            updated_weights = self.learning_rule(
+                weights, self.coefficients, pattern, pattern
+            )
+            return updated_weights, None
+
+        n = patterns.shape[0]
+        final_weights, _ = lax.scan(update_step, init=self.weights, xs=np.arange(n))
+        return self.__class__(weights=final_weights, coefficients=self.coefficients)
 
     @override
     @staticmethod

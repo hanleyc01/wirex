@@ -20,6 +20,7 @@ from experiments import similarity
 from experiments.similarity import cosine_similarity
 from wirex.models.rate import GeneralHebbian, Hopfield
 
+from .experiment_result import ExperimentalResult
 from .randomdata.models import random_models
 
 __all__ = ["MnistExperiment", "PIXEL_WIDTH", "PIXEL_HEIGHT"]
@@ -38,25 +39,6 @@ def _transform(data: torch.Tensor) -> NDArray[np.float32]:
     dataarr[dataarr > 0.0] = 1.0
     dataarr[dataarr == 0.0] = -1.0
     return dataarr
-
-
-@dataclass
-class ExperimentalResult:
-    """Dataclass to capture the results of an experimental trial.
-
-    Attributes:
-        coeffs: The coefficients of the model.
-        patterns_stored: The number of patterns stored.
-        query: The query pattern.
-        result: The result pattern.
-        cosine_similarity: The cosine similarity between the query and the result.
-    """
-
-    coeffs: list[float]
-    patterns_stored: int
-    query: list[float]
-    result: list[float]
-    cosine_similarity: float
 
 
 @dataclass

@@ -26,21 +26,41 @@ def dot_similarity(x: jax.Array, y: jax.Array) -> jax.Array:
 
 def hamming_distance(x: jax.Array, y: jax.Array) -> jax.Array:
     """Hamming distance between two binary vectors."""
-    ...
+
+    equals_zero = x == y
+    return jnp.sum(1 - equals_zero)
 
 
 def chebyshev_distance(x: jax.Array, y: jax.Array) -> jax.Array:
     """[Chebyshev distance](https://en.wikipedia.org/wiki/Chebyshev_distance) function between
     two vectors.
     """
-    ...
+    diff = x - y
+    return jnp.max(diff)
 
 
 def levenshtein_distance(x: jax.Array, y: jax.Array) -> jax.Array:
     """[Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
     between two vectors.
     """
-    ...
+
+    m = len(x)
+    n = len(y)
+
+    prev = jnp.arange(n + 1, dtype=int)
+    curr = jnp.zeros(n + 1, dtype=int)
+
+    for i in range(1, m + 1):
+        curr = curr.at[0].set(i)
+        for j in range(1, n + 1):
+            if x[i - 1] * y[i - 1] == 1:
+                cost = 0
+            else:
+                cost = 1
+            curr = curr.at[j].set(min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost))
+        prev, curr = curr, prev
+
+    return prev[n]
 
 
 def jaccard_index(x: jax.Array, y: jax.Array) -> jax.Array:

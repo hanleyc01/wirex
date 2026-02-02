@@ -14,12 +14,20 @@ class MnistArgs:
     max: int
     batch_size: int
     output: str | None
+    num_models: int
 
 
 def mnist_subparser_defaults(args: ap.Namespace) -> MnistArgs:
     """Wrapped constructor to be used in the argument parser."""
     output = args.output[0] if type(args.output) == list else None
-    return MnistArgs(args.train, args.min[0], args.max[0], args.batch_size[0], output)
+    return MnistArgs(
+        args.train,
+        args.min[0],
+        args.max[0],
+        args.batch_size[0],
+        output,
+        args.num_models[0],
+    )
 
 
 @dataclass
@@ -32,6 +40,7 @@ class RandomArgs:
     min: int
     max: int
     output: str | None
+    num_models: int
 
 
 def random_subparser_defaults(args: ap.Namespace) -> RandomArgs:
@@ -46,6 +55,7 @@ def random_subparser_defaults(args: ap.Namespace) -> RandomArgs:
         args.min,
         args.max,
         output,
+        args.num_models[0],
     )
 
 
@@ -62,6 +72,13 @@ def ExperimentParser() -> ap.ArgumentParser:
         "--output",
         nargs=1,
         help="Default: stdout. Path of file to output results",
+    )
+    _ = argparser.add_argument(
+        "-n",
+        "--num_models",
+        nargs=1,
+        default=[10],
+        help="The number of models to generate for the given task.",
     )
     argparser.set_defaults(func=lambda _: None)
     subparsers = argparser.add_subparsers(help="Differing experimental conditions")
@@ -153,6 +170,7 @@ def mnist_experiment(args: MnistArgs) -> None:
         max=args.max,
         output=args.output,
         batch_size=args.batch_size,
+        num_models=args.num_models,
     )
     experiment.run()
 

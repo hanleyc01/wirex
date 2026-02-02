@@ -1,6 +1,6 @@
 """A Hebbian model is any associative memory which implements a *Hebbian* learning rule."""
 
-from typing import Callable, Self
+from typing import Callable, Self, cast
 
 import equinox as eqx
 import jax
@@ -67,6 +67,19 @@ class Coefficients(eqx.Module):
             ],
             dtype=dtype,
         )
+
+    def tolist(self) -> list[float]:
+        coeffs = [
+            self.c_0,
+            self.c_1_pre,
+            self.c_1_post,
+            self.c_2_pre,
+            self.c_2_post,
+            self.c_2_corr,
+            self.c_3_pre,
+            self.c_3_post,
+        ]
+        return cast(list[float], coeffs)
 
 
 class Hebbian(eqx.Module):

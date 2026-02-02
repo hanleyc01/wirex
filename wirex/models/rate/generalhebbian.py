@@ -98,20 +98,31 @@ class GeneralHebbian(Hebbian):
         """
         # TODO(hanleyc01): optimize this loop to use `lax` builtins for speed-up; see note in `Self.init`, but
         # also note how we use convert to an array here: wouldn't it be easier to store an array *already*?
+        # coeffsarr = coefficients.jax()
+        # pattern_dim, _ = weights.shape
+        # new_weights = jnp.zeros_like(weights)
+        # for i in range(pattern_dim):
+        #     for j in range(pattern_dim):
+        #         weights_ij = new_weights.at[i, j].add(
+        #             coeffsarr[0]
+        #             + coeffsarr[1] * pre_synaptic_layer[i]
+        #             + coeffsarr[2] * post_synaptic_layer[j]
+        #             + coeffsarr[3] * (pre_synaptic_layer[i] ** 2)
+        #             + coeffsarr[4] * (post_synaptic_layer[j] ** 2)
+        #             + coeffsarr[5] * pre_synaptic_layer[i] * post_synaptic_layer[j]
+        #             + coeffsarr[6] * (pre_synaptic_layer[i] ** 3)
+        #             + coeffsarr[7] * (post_synaptic_layer[j] ** 3)
+        #         )
+        #         new_weights = weights_ij
+        # return new_weights
         coeffsarr = coefficients.jax()
-        pattern_dim, _ = weights.shape
-        new_weights = jnp.zeros_like(weights)
-        for i in range(pattern_dim):
-            for j in range(pattern_dim):
-                weights_ij = new_weights.at[i, j].add(
-                    coeffsarr[0]
-                    + coeffsarr[1] * pre_synaptic_layer[i]
-                    + coeffsarr[2] * post_synaptic_layer[j]
-                    + coeffsarr[3] * (pre_synaptic_layer[i] ** 2)
-                    + coeffsarr[4] * (post_synaptic_layer**2)
-                    + coeffsarr[5] * pre_synaptic_layer[i] * post_synaptic_layer[j]
-                    + coeffsarr[6] * (pre_synaptic_layer**3)
-                    + coeffsarr[7] * (post_synaptic_layer**3)
-                )
-                new_weights = new_weights.at[i, j].set(weights_ij)
-        return new_weights
+        return (
+            coeffsarr[0]
+            + coeffsarr[1] * pre_synaptic_layer[:, None]
+            + coeffsarr[2] * post_synaptic_layer[None, :]
+            + coeffsarr[3] * (pre_synaptic_layer[:, None] ** 2)
+            + coeffsarr[4] * (post_synaptic_layer[None, :] ** 2)
+            + coeffsarr[5] * pre_synaptic_layer[:, None] * post_synaptic_layer[None, :]
+            + coeffsarr[6] * (pre_synaptic_layer[:, None] ** 3)
+            + coeffsarr[7] * (post_synaptic_layer[None, :] ** 3)
+        )

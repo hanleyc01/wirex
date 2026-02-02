@@ -34,7 +34,6 @@ def mnist_subparser_defaults(args: ap.Namespace) -> MnistArgs:
 class RandomArgs:
     dist: Literal["uniform"] | Literal["skew"] | Literal["corr"]
     value: float | None
-    num_patterns: int
     pattern_dim: int
     dtype: str
     min: int
@@ -49,7 +48,6 @@ def random_subparser_defaults(args: ap.Namespace) -> RandomArgs:
     return RandomArgs(
         args.distribution,
         args.value,
-        args.num_patterns,
         args.pattern_dim,
         args.dtype,
         args.min,
@@ -96,9 +94,6 @@ def ExperimentParser() -> ap.ArgumentParser:
         type=float,
         nargs="?",
         help="Optional value used as kurtosis or skew.",
-    )
-    _ = random_subparser.add_argument(
-        "num_patterns", type=int, nargs=1, help="Number of patterns to generate."
     )
     _ = random_subparser.add_argument(
         "pattern_dim", type=int, nargs=1, help="Dimension of patterns to generate."

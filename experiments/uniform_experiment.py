@@ -4,10 +4,14 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 
 import jax
+import jax.random as jr
 
 from wirex.models.rate import GeneralHebbian
 
 from .experiment_result import ExperimentalResult
+from .randomdata.models import random_models
+
+KEY = jr.PRNGKey(111)
 
 
 @dataclass
@@ -36,7 +40,10 @@ class UniformExperiment:
     output: str | None
     num_models: int
 
-    def generate_models(self) -> list[GeneralHebbian]: ...
+    def generate_models(self) -> list[GeneralHebbian]:
+        return random_models(
+            key=KEY, num_models=self.num_models, pattern_dim=self.pattern_dim
+        )
 
     def generate_data(self) -> Iterator[jax.Array]: ...
 

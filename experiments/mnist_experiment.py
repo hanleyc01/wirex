@@ -16,9 +16,8 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 from tqdm import tqdm
 
-from experiments import similarity
 from experiments.similarity import cosine_similarity
-from wirex.models.rate import GeneralHebbian, Hopfield
+from wirex.models.rate import GeneralHebbian
 
 from .experiment_result import ExperimentalResult
 from .randomdata.models import random_models

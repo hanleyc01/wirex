@@ -9,6 +9,7 @@ from wirex.models.rate import Coefficients, GeneralHebbian
 __all__ = ["random_coefficients", "random_models"]
 
 
+# TODO(hanleyc01): There must be a more efficient way of doing this.
 def random_coefficients(key: jax.Array, num_coefficients: int) -> list[Coefficients]:
     """Generate random coefficients.
 

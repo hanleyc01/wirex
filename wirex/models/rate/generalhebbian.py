@@ -56,7 +56,7 @@ class GeneralHebbian(Hebbian):
         ) -> tuple[Float[Array, "D D"], None]:
             """Iterate through the pattern set provided."""
             pattern = patterns[i]
-            updated_weights = self.learning_rule(
+            updated_weights = weights + self.learning_rule(
                 weights, self.coefficients, pattern, pattern
             )
             return updated_weights, None
